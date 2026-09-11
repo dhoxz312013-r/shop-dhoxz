@@ -1,0 +1,6 @@
+{
+  "name": "DHOXZ-UT",
+  "description": "Website resmi jasa digital DHOXZ-UT. Layanan joki kontak, slot owner, dan jasa digital simple, murah & mudah dengan order langsung melalui WhatsApp Admin.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
