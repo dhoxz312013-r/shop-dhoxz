@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DHOXZ SHOP - Official Web Store</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            bg: '#060911',
+                            card: '#0c1220',
+                            border: '#1a2642',
+                            accent: '#00f0ff',
+                            purple: '#8a2be2',
+                            emerald: '#10b981'
+                        }
+                    },
+                    fontFamily: {
+                        outfit: ['Outfit', 'sans-serif'],
+                        jakarta: ['Plus Jakarta Sans', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* PREVENT HORIZONTAL SCROLL ENTIRELY */
+        html, body {
+            max-width: 100vw;
+            overflow-x: hidden !important;
+            background-color: #060911;
+            color: #f1f5f9;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(138, 43, 226, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0, 240, 255, 0.1) 0%, transparent 40%);
+            background-attachment: fixed;
+        }
+
+        /* PRELOADER STYLES */
+        #preloader {
+            background-color: #05070e;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+
+        #preloader.fade-out {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* SOFT AMBIENT GLOW ANIMATIONS */
+        @keyframes softFloatGlow {
+            0%, 100% {
+                text-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+                opacity: 0.95;
+            }
+            50% {
+                text-shadow: 0 0 20px rgba(0, 240, 255, 0.8), 0 0 30px rgba(138, 43, 226, 0.4);
+                opacity: 1;
+            }
+        }
+
+        .smooth-glow-cyan {
+            animation: softFloatGlow 3.5s ease-in-out infinite;
+        }
+
+        .loader-bar-glow {
+            box-shadow: 0 0 12px rgba(0, 240, 255, 0.8), 0 0 25px rgba(138, 43, 226, 0.5);
+        }
+
+        /* GLASS CARDS */
+        .glass-panel {
+            background: rgba(12, 18, 32, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* ANIMATION ON TAB CLICK */
+        @keyframes tabContentEnter {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tab-enter-anim {
+            animation: tabContentEnter 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* STRICTLY FIXED BOTTOM NAVIGATION BAR */
+        .bottom-nav-fixed {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100vw;
+            z-index: 50;
+            background: rgba(8, 12, 22, 0.96);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-top: 1px solid rgba(0, 240, 255, 0.2);
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.6);
+            transform: none !important;
+            margin: 0 !important;
+        }
+
+        /* NAV BUTTON STYLING */
+        .nav-btn-static {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 2px;
+            color: #94a3b8;
+            transition: color 0.2s ease, background-color 0.2s ease;
+            transform: none !important;
+            user-select: none;
+        }
+
+        .nav-btn-static:active, .nav-btn-static:hover {
+            transform: none !important;
+        }
+
+        .nav-btn-static.active-tab {
+            color: #00f0ff !important;
+            background: rgba(0, 240, 255, 0.08);
+            border-top: 2px solid #00f0ff;
+        }
+
+        /* BTN CYBER */
+        .btn-cyber {
+            background: linear-gradient(135deg, #8a2be2 0%, #00f0ff 100%);
+            transition: opacity 0.2s ease;
+        }
+        .btn-cyber:hover {
+            opacity: 0.92;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-black font-jakarta pb-24">
+
+    <!-- 1. PRELOADER SCREEN -->
+    <div id="preloader" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-6 text-center select-none">
+        <div class="relative mb-8">
+            <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-tr from-purple-600 via-cyan-400 to-emerald-400 p-1 shadow-2xl shadow-cyan-500/20">
+                <div class="w-full h-full bg-cyber-bg rounded-xl flex items-center justify-center">
+                    <span class="font-outfit font-black text-3xl sm:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">DS</span>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="font-outfit font-extrabold text-2xl sm:text-3xl text-white tracking-widest mb-1">
+            DHOXZ <span class="text-cyan-400">SHOP</span>
+        </h1>
+        <p id="server-status-sub" class="text-xs font-mono text-gray-400 mb-6 tracking-widest">INITIALIZING SECURE PROTOCOL...</p>
+
+        <!-- Dynamic Counter -->
+        <div class="font-outfit font-black text-4xl sm:text-5xl text-cyan-400 smooth-glow-cyan mb-6 tracking-tight">
+            <span id="loading-counter">0</span><span class="text-2xl font-light text-purple-400">%</span>
+        </div>
+
+        <!-- Progress Bar Track -->
+        <div class="w-full max-w-xs sm:max-w-md bg-gray-900 p-1 rounded-full border border-cyan-500/20 shadow-inner mb-6 relative overflow-hidden">
+            <div id="loading-bar" class="h-2 rounded-full bg-gradient-to-r from-purple-600 via-cyan-400 to-emerald-400 w-0 transition-all duration-100 loader-bar-glow"></div>
+        </div>
+
+        <!-- Server Check Prompt -->
+        <div class="font-outfit font-bold text-xs sm:text-sm text-cyan-300 tracking-wider smooth-glow-cyan flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500/5 border border-cyan-500/10">
+            <i class="fa-solid fa-circle-notch fa-spin text-cyan-400"></i>
+            <span>PENGECEKAN SERVER HARAP BERSABAR</span>
+        </div>
+    </div>
+
+    <!-- MAIN APPLICATION -->
+    <div id="main-content" class="opacity-0 transition-opacity duration-500">
+        
+        <!-- HEADER -->
+        <header class="sticky top-0 z-40 glass-panel border-b border-gray-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('beranda')">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 to-cyan-400 flex items-center justify-center font-outfit font-black text-xl text-black shadow-lg shadow-cyan-500/20">
+                            DS
+                        </div>
+                        <div>
+                            <span class="font-outfit font-extrabold text-lg tracking-wider text-white block leading-none">DHOXZ<span class="text-cyan-400">SHOP</span></span>
+                            <span class="text-[9px] text-gray-400 font-mono tracking-widest">OFFICIAL STORE</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-mono">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        ONLINE
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="max-w-5xl mx-auto px-4 py-6">
+            
+            <!-- 1. BERANDA TAB -->
+            <section id="tab-beranda" class="tab-content">
+                <div class="flex flex-col items-center justify-center min-h-[55vh] text-center">
+                    <div class="glass-panel p-6 sm:p-12 rounded-3xl max-w-xl w-full border border-cyan-500/30">
+                        <div class="w-16 h-16 mx-auto mb-6 rounded-2xl bg-cyan-500/10 flex items-center justify-center text-cyan-400 border border-cyan-500/20">
+                            <i class="fa-solid fa-shield-halved text-3xl"></i>
+                        </div>
+
+                        <h1 class="font-outfit font-black text-xl sm:text-3xl text-white tracking-wide mb-4 leading-relaxed">
+                            SELAMAT DATANG DI WEBSITE <br>
+                            <span class="text-cyan-400 smooth-glow-cyan">DHOXZ SHOP</span>
+                        </h1>
+
+                        <p class="text-base sm:text-lg text-gray-300 font-medium mt-4 leading-relaxed">
+                            SELAMAT MENIKMATI LAYANAN YANG TERSEDIA DI SINI YA 🙏😇
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. JOKY TAB -->
+            <section id="tab-joky" class="tab-content hidden">
+                <div class="space-y-6">
+                    <div class="glass-panel p-5 rounded-2xl border-l-4 border-l-cyan-400 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                        <div>
+                            <h2 class="font-outfit font-bold text-xl sm:text-2xl text-white tracking-wider">
+                                MENU JOKY BY DHOXZ STORE
+                            </h2>
+                            <p class="text-gray-400 text-xs sm:text-sm mt-1">Pilih paket durasi joki sesuai kebutuhan kamu</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2 font-outfit text-xs font-semibold">
+                            <span class="px-3 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                                ( INSYALLAH DERES )
+                            </span>
+                            <span class="px-3 py-1 rounded-lg bg-rose-500/10 text-rose-400 border border-rose-500/30">
+                                ( NO REF )
+                            </span>
+                        </div>
+                    </div>
+
+                    <div id="joky-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+                </div>
+            </section>
+
+            <!-- 3. KEBUTUH JB BY DHOXZ TAB -->
+            <section id="tab-kebutuh-jb" class="tab-content hidden">
+                <div class="space-y-6">
+                    <div class="glass-panel p-5 rounded-2xl border-l-4 border-l-purple-500">
+                        <h2 class="font-outfit font-bold text-xl sm:text-2xl text-white tracking-wider">
+                            KEBUTUH JB BY DHOXZ
+                        </h2>
+                        <p class="text-gray-400 text-xs sm:text-sm mt-1">Aplikasi & Tools pendukung JB WhatsApp dan Digital</p>
+                    </div>
+
+                    <div id="kebutuh-jb-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+                </div>
+            </section>
+
+            <!-- 4. SC TELE TAB -->
+            <section id="tab-sc-tele" class="tab-content hidden">
+                <div class="space-y-6">
+                    <div class="glass-panel p-5 rounded-2xl border-l-4 border-l-cyan-400 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                        <div>
+                            <h2 class="font-outfit font-bold text-xl sm:text-2xl text-white tracking-wider">
+                                SC TELE FULL 2 K
+                            </h2>
+                            <p class="text-gray-400 text-xs mt-1">
+                                CARA BELI: CLICK YANG KAU MAU BELI, MASUKAN NAMA, LALU PILIH PAYMENT DAN KONFIRMASI KE WA ADMIN
+                            </p>
+                        </div>
+                        <span class="px-3 py-1.5 bg-cyan-500/20 text-cyan-400 rounded-xl font-outfit font-bold text-xs border border-cyan-500/30 shrink-0">
+                            HARGA: 2K ALL ITEM
+                        </span>
+                    </div>
+
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" id="sc-search" oninput="filterScripts()" placeholder="Cari Script Telegram..." class="w-full pl-11 pr-4 py-3 bg-cyber-card border border-gray-800 rounded-xl focus:outline-none focus:border-cyan-400 text-gray-200 text-sm">
+                    </div>
+
+                    <div id="sc-tele-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5"></div>
+                </div>
+            </section>
+
+            <!-- 5. OWN TAB -->
+            <section id="tab-own" class="tab-content hidden">
+                <div class="flex flex-col items-center justify-center min-h-[50vh] text-center">
+                    <div class="glass-panel p-8 rounded-3xl max-w-md w-full border border-amber-500/30">
+                        <div class="w-16 h-16 mx-auto mb-5 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-400 border border-amber-500/20 text-2xl">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                        <h2 class="font-outfit font-extrabold text-xl text-amber-400 mb-2">
+                            BELUM OPEN OWNER
+                        </h2>
+                        <p class="text-gray-300 font-semibold text-base">
+                            MENU OWNER AKAN SEGERA DIBUKA
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. BANTUAN TAB (SUDAH DITAMBAHKAN SALURAN ADMIN) -->
+            <section id="tab-bantuan" class="tab-content hidden">
+                <div class="flex flex-col items-center justify-center min-h-[50vh]">
+                    <div class="glass-panel p-8 rounded-3xl max-w-md w-full text-center border border-cyan-500/30">
+                        <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-cyan-500/10 flex items-center justify-center text-cyan-400 border border-cyan-500/20 text-2xl">
+                            <i class="fa-solid fa-headset"></i>
+                        </div>
+                        
+                        <h2 class="font-outfit font-bold text-lg text-gray-300 mb-1">
+                            BANTUAN & SALURAN RESMI
+                        </h2>
+                        <p class="text-gray-400 text-xs mb-6">Hubungi admin atau bergabung dengan saluran resmi DHOXZ SHOP</p>
+
+                        <div class="space-y-3">
+                            <!-- NOMOR WA ADMIN -->
+                            <a href="https://wa.me/6285129746314" target="_blank" class="inline-flex items-center justify-center gap-3 w-full py-3.5 rounded-xl font-outfit font-extrabold text-base bg-emerald-500 text-black shadow-lg shadow-emerald-500/20 hover:opacity-90 transition">
+                                <i class="fa-brands fa-whatsapp text-xl"></i>
+                                WA ADMIN (+62 851-2974-6314)
+                            </a>
+
+                            <!-- SALURAN ADMIN -->
+                            <a href="https://whatsapp.com/channel/0029Vb7935l3wtb3AGeNF30i" target="_blank" class="inline-flex items-center justify-center gap-3 w-full py-3.5 rounded-xl font-outfit font-extrabold text-base bg-cyan-400 text-black shadow-lg shadow-cyan-400/20 hover:opacity-90 transition">
+                                <i class="fa-solid fa-bullhorn text-xl"></i>
+                                SALURAN ADMIN
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- BOTTOM NAVIGATION BAR -->
+    <nav id="bottom-nav" class="bottom-nav-fixed hidden">
+        <div class="grid grid-cols-6 max-w-xl mx-auto font-outfit text-[9px] sm:text-[10px] font-bold text-center">
+            <button onclick="switchTab('beranda')" id="nav-beranda" class="nav-btn-static active-tab">
+                <i class="fa-solid fa-house text-sm mb-0.5"></i>
+                <span class="truncate w-full tracking-tight">BERANDA</span>
+            </button>
+            <button onclick="switchTab('joky')" id="nav-joky" class="nav-btn-static">
+                <i class="fa-solid fa-gamepad text-sm mb-0.5"></i>
+                <span class="truncate w-full tracking-tight">JOKY</span>
+            </button>
+            <button onclick="switchTab('kebutuh-jb')" id="nav-kebutuh-jb" class="nav-btn-static">
+                <i class="fa-solid fa-box-open text-sm mb-0.5"></i>
+                <span class="truncate w-full tracking-tight">KEBUTUH JB</span>
+            </button>
+            <button onclick="switchTab('sc-tele')" id="nav-sc-tele" class="nav-btn-static">
+                <i class="fa-solid fa-code text-sm mb-0.5"></i>
+                <span class="truncate w-full tracking-tight">SC TELE</span>
+            </button>
+            <button onclick="switchTab('own')" id="nav-own" class="nav-btn-static">
+                <i class="fa-solid fa-user-shield text-sm mb-0.5"></i>
+                <span class="truncate w-full tracking-tight">OWN</span>
+            </button>
+            <button onclick="switchTab('bantuan')" id="nav-bantuan" class="nav-btn-static">
+                <i class="fa-solid fa-headset text-sm mb-0.5"></i>
+                <span class="truncate w-full tracking-tight">BANTUAN</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- CHECKOUT MODAL -->
+    <div id="checkout-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/80 p-4">
+        <div class="glass-panel border border-cyan-500/40 w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl relative">
+            <div class="p-4 bg-cyber-card border-b border-gray-800 flex justify-between items-center">
+                <h3 id="modal-title" class="font-outfit font-bold text-base text-cyan-400">KONFIRMASI PESANAN</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-white text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="p-5 space-y-4" id="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        // DATA ARRAYS
+        const jokyOptions = [
+            { price: '1K', duration: '1 HARI' },
+            { price: '2K', duration: '2 HARI' },
+            { price: '3K', duration: '3 HARI' },
+            { price: '4K', duration: '4 HARI' },
+            { price: '5K', duration: '5 HARI' },
+            { price: '6K', duration: '6 HARI' },
+            { price: '7K', duration: '7 HARI' },
+            { price: '8K', duration: '8 HARI' },
+            { price: '9K', duration: '9 HARI' },
+            { price: '10K', duration: '10 HARI' }
+        ];
+
+        const kebutuhanJbItems = [
+            { name: "APK AUTO SV KONTAK", price: "3K FULL TUTORIAL", detail: "Otomatis Save Kontak JB" },
+            { name: "APK NOKOKS ALL APK/NEGARA", price: "4K", detail: "Multi All Negara" },
+            { name: "APK LOGO ( ISINYA UDAH FULL BAHAN BAHAN LOGO )", price: "5–7K", detail: "Full Pack Asset Design" },
+            { name: "APK FAKE LOKASINE", price: "6K", detail: "Fake GPS Pro" },
+            { name: "APK QRIS TANPA KTP", price: "5K", detail: "Instant Payment Gateway" },
+            { name: "APK SUNTIK SOSMED ALL", price: "3K", detail: "All Social Media Booster" },
+            { name: "APK EDIT LOGO", price: "5K", detail: "Design Studio Pro" }
+        ];
+
+        const scTeleItems = [
+            "1k react ch wa.zip", "76 APEL NEW.zip", "76 APEL V1,5.zip", "AIMLOCK 80% V5 ASHEL.7z",
+            "api dark verse v6 (1).zip", "API NEW BY VINZX.zip", "APOCLYSE.zip", "Autoresbot jpm (premium not share).zip",
+            "BAHAN_UP_DANA_BISNIS.zip", "BASE APK RED VILLA IN.zip", "BASE BUG BY PITO.zip", "base improve.zip",
+            "BASE KECE.zip", "BASE TOXIC (1).zip", "BOT SUNTIK Abal push ch.zip", "BUBLE V3.zip",
+            "BUG V TELEE.zip", "BUG V TELE (1).zip", "bypass-project.zip", "bypass-project (1).zip",
+            "CASINO INVICTUS VERSION ( 16.0.0 ) by nsya.zip", "code_html_RiszOfficial store.zip", "CPANEL 4 SVR New.zip",
+            "CPANEL BUTTON.zip", "CPANEL RISZ OFFICIAL.zip", "Cpanel Telegram.zip", "Cpanel ©RyaaNewdev (1).zip",
+            "CpanelV3.2(10srv).zip.bak", "DRAGON CRASH V3 BY SYAA.zip", "FAXATIC+BUGSS.zip", "FURINA INFINITY V8[ BYPASS ].zip",
+            "GALAXY INVICTUS V5 G1 F2[ BYPASS ].zip", "Gojo Satoru MD V4.5.zip", "GOJO V14[ BYPASS ].zip",
+            "Hackvps x Deface.zip", "Hackvps x Deface (1).zip", "Indictive SiX 66.zip", "Itachi invintus v3 ( no enc )",
+            "Justin v24 (no enc )"
+        ];
+
+        let orderState = {
+            category: '',
+            item: '',
+            nominal: '',
+            buyerName: '',
+            buyerPhone: '',
+            paymentMethod: ''
+        };
+
+        // PRELOADER ENGINE (0% TO 100%)
+        function startPreloader() {
+            let progress = 0;
+            const counterEl = document.getElementById('loading-counter');
+            const barEl = document.getElementById('loading-bar');
+            const statusSubEl = document.getElementById('server-status-sub');
+            const preloader = document.getElementById('preloader');
+            const mainContent = document.getElementById('main-content');
+            const bottomNav = document.getElementById('bottom-nav');
+
+            const duration = 5000;
+            const intervalTime = 50; 
+            const increment = 100 / (duration / intervalTime);
+
+            const timer = setInterval(() => {
+                let rnd = Math.random() * 0.8 + 0.6;
+                progress += increment * rnd;
+
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(timer);
+
+                    counterEl.innerText = "100";
+                    barEl.style.width = "100%";
+                    statusSubEl.innerText = "SERVER CONNECTED! WELCOME";
+                    statusSubEl.classList.add('text-emerald-400');
+
+                    setTimeout(() => {
+                        preloader.classList.add('fade-out');
+                        mainContent.classList.remove('opacity-0');
+                        bottomNav.classList.remove('hidden');
+                    }, 400);
+                } else {
+                    const currentVal = Math.floor(progress);
+                    counterEl.innerText = currentVal;
+                    barEl.style.width = currentVal + "%";
+
+                    if (currentVal < 30) {
+                        statusSubEl.innerText = "CONNECTING TO DHOXZ SERVER...";
+                    } else if (currentVal < 65) {
+                        statusSubEl.innerText = "VERIFYING SECURITY TOKENS...";
+                    } else if (currentVal < 90) {
+                        statusSubEl.innerText = "LOADING STORE ASSETS...";
+                    } else {
+                        statusSubEl.innerText = "FINALIZING CONFIGURATION...";
+                    }
+                }
+            }, intervalTime);
+        }
+
+        // TAB SWITCHER
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('tab-enter-anim');
+            });
+
+            document.querySelectorAll('.nav-btn-static').forEach(el => el.classList.remove('active-tab'));
+            
+            const selectedTab = document.getElementById(`tab-${tabId}`);
+            if (selectedTab) {
+                selectedTab.classList.remove('hidden');
+                void selectedTab.offsetWidth; 
+                selectedTab.classList.add('tab-enter-anim');
+            }
+
+            const selectedNav = document.getElementById(`nav-${tabId}`);
+            if (selectedNav) selectedNav.classList.add('active-tab');
+
+            window.scrollTo({ top: 0, behavior: 'instant' });
+        }
+
+        // RENDER DATA
+        function initRender() {
+            // Joky Items
+            const jokyGrid = document.getElementById('joky-grid');
+            jokyGrid.innerHTML = jokyOptions.map((opt) => `
+                <div onclick="startJokyFlow('${opt.price} — ${opt.duration}')" class="glass-panel p-4 rounded-xl cursor-pointer flex justify-between items-center hover:border-cyan-400 transition">
+                    <div>
+                        <div class="font-outfit font-extrabold text-cyan-400 text-xl">${opt.price}</div>
+                        <div class="text-xs font-semibold text-gray-300 font-mono mt-0.5">${opt.duration}</div>
+                    </div>
+                    <div class="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center text-cyan-400 text-xs">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </div>
+            `).join('');
+
+            // Kebutuh JB Items
+            const jbGrid = document.getElementById('kebutuh-jb-grid');
+            jbGrid.innerHTML = kebutuhanJbItems.map((item) => `
+                <div onclick="startJbFlow('${item.name}', '${item.price}')" class="glass-panel p-4 rounded-xl cursor-pointer flex justify-between items-center hover:border-purple-500 transition">
+                    <div class="pr-2">
+                        <div class="font-bold text-white text-xs sm:text-sm">${item.name}</div>
+                        <div class="text-[10px] text-gray-400 mt-0.5">${item.detail}</div>
+                    </div>
+                    <span class="px-2.5 py-1 rounded-lg bg-purple-500/20 text-purple-300 font-outfit font-bold text-xs shrink-0">
+                        ${item.price}
+                    </span>
+                </div>
+            `).join('');
+
+            // SC Tele Items
+            renderScTele(scTeleItems);
+        }
+
+        function renderScTele(items) {
+            const scGrid = document.getElementById('sc-tele-grid');
+            scGrid.innerHTML = items.map((sc, idx) => `
+                <div onclick="startScFlow('${sc}')" class="glass-panel p-3 rounded-lg cursor-pointer hover:border-cyan-400 transition flex items-center gap-2.5">
+                    <div class="w-6 h-6 rounded bg-cyan-500/10 flex items-center justify-center text-cyan-400 text-[10px] font-mono font-bold shrink-0">
+                        ${idx + 1}
+                    </div>
+                    <div class="truncate text-xs font-medium text-gray-300 flex-1">
+                        ${sc}
+                    </div>
+                    <span class="text-xs text-cyan-400 font-mono font-bold shrink-0">2K</span>
+                </div>
+            `).join('');
+        }
+
+        function filterScripts() {
+            const query = document.getElementById('sc-search').value.toLowerCase();
+            const filtered = scTeleItems.filter(item => item.toLowerCase().includes(query));
+            renderScTele(filtered);
+        }
+
+        // MODAL ENGINE
+        function openModal() {
+            document.getElementById('checkout-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('checkout-modal').classList.add('hidden');
+        }
+
+        // FLOW 1: JOKY
+        function startJokyFlow(nominal) {
+            orderState = { category: 'joky', nominal: nominal };
+            document.getElementById('modal-title').innerText = 'JOKY - INPUT DATA';
+            
+            const body = document.getElementById('modal-body');
+            body.innerHTML = `
+                <div class="bg-cyan-500/10 p-2.5 rounded-xl border border-cyan-500/20 text-xs font-semibold text-cyan-300">
+                    Pilihan Paket: ${nominal}
+                </div>
+
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-outfit font-bold text-gray-400 mb-1">NAMA JB MU:</label>
+                        <input type="text" id="input-jb-name" placeholder="Contoh: SULTAN DHOXZ STR" class="w-full px-3 py-2 bg-cyber-bg border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-outfit font-bold text-gray-400 mb-1">NOMOR ELU (Format WA):</label>
+                        <div class="flex items-center bg-cyber-bg border border-gray-700 rounded-lg overflow-hidden focus-within:border-cyan-400">
+                            <span class="px-2.5 text-gray-400 font-mono text-xs">wa.me/62</span>
+                            <input type="number" id="input-jb-phone" placeholder="8512345678" class="w-full py-2 bg-transparent text-white text-sm focus:outline-none pr-2">
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="submitJokyData()" class="w-full btn-cyber py-2.5 rounded-xl font-outfit font-bold text-black text-sm mt-2">
+                    LANJUTKAN KE PEMBAYARAN <i class="fa-solid fa-arrow-right ml-1"></i>
+                </button>
+            `;
+            openModal();
+        }
+
+        function submitJokyData() {
+            const name = document.getElementById('input-jb-name').value.trim();
+            const phone = document.getElementById('input-jb-phone').value.trim();
+
+            if (!name || !phone) {
+                alert('Mohon isi semua data!');
+                return;
+            }
+
+            orderState.buyerName = name;
+            orderState.buyerPhone = phone;
+            showPaymentStep();
+        }
+
+        // FLOW 2 & 3: KEBUTUH JB & SC TELE
+        function startJbFlow(item, nominal) {
+            orderState = { category: 'kebutuh-jb', item: item, nominal: nominal };
+            showBuyerNameStep();
+        }
+
+        function startScFlow(scName) {
+            orderState = { category: 'sc-tele', item: scName, nominal: '2K' };
+            showBuyerNameStep();
+        }
+
+        function showBuyerNameStep() {
+            document.getElementById('modal-title').innerText = 'FORM PEMBELIAN';
+            const body = document.getElementById('modal-body');
+            body.innerHTML = `
+                <div class="bg-purple-500/10 p-2.5 rounded-xl border border-purple-500/20 text-xs font-semibold text-purple-300">
+                    Item: ${orderState.item} (${orderState.nominal})
+                </div>
+
+                <div>
+                    <label class="block text-xs font-outfit font-bold text-gray-400 mb-1">NAMA PEMBELI:</label>
+                    <input type="text" id="input-buyer-name" placeholder="Masukkan nama kamu..." class="w-full px-3 py-2 bg-cyber-bg border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:border-purple-400">
+                </div>
+
+                <button onclick="submitBuyerName()" class="w-full btn-cyber py-2.5 rounded-xl font-outfit font-bold text-black text-sm mt-2">
+                    PILIH METODE PEMBAYARAN <i class="fa-solid fa-arrow-right ml-1"></i>
+                </button>
+            `;
+            openModal();
+        }
+
+        function submitBuyerName() {
+            const name = document.getElementById('input-buyer-name').value.trim();
+            if (!name) {
+                alert('Mohon masukkan nama pembeli!');
+                return;
+            }
+            orderState.buyerName = name;
+            showPaymentStep();
+        }
+
+        // PAYMENT METHOD SELECTION STEP
+        function showPaymentStep() {
+            document.getElementById('modal-title').innerText = 'METODE PEMBAYARAN';
+            const body = document.getElementById('modal-body');
+            body.innerHTML = `
+                <p class="text-xs text-gray-400 mb-2">Silahkan pilih metode pembayaran:</p>
+
+                <div class="space-y-2">
+                    <label class="glass-panel p-3 rounded-xl flex items-center justify-between cursor-pointer border border-gray-800">
+                        <div class="flex items-center gap-2.5">
+                            <input type="radio" name="payment" value="QRIS" class="accent-cyan-400" checked>
+                            <div>
+                                <div class="font-bold text-white text-xs">QRIS</div>
+                                <div class="text-[10px] text-gray-400">Qris ( via wa )</div>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-qrcode text-cyan-400 text-sm"></i>
+                    </label>
+
+                    <label class="glass-panel p-3 rounded-xl flex items-center justify-between cursor-pointer border border-gray-800">
+                        <div class="flex items-center gap-2.5">
+                            <input type="radio" name="payment" value="DANA" class="accent-cyan-400">
+                            <div>
+                                <div class="font-bold text-white text-xs">DANA</div>
+                                <div class="text-xs text-emerald-400 font-mono">0882260762265</div>
+                                <div class="text-[10px] text-gray-400">(tf dulu kirim bukti lewat wa)</div>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-wallet text-blue-400 text-sm"></i>
+                    </label>
+
+                    <label class="glass-panel p-3 rounded-xl flex items-center justify-between cursor-pointer border border-gray-800">
+                        <div class="flex items-center gap-2.5">
+                            <input type="radio" name="payment" value="GOPAY" class="accent-cyan-400">
+                            <div>
+                                <div class="font-bold text-white text-xs">GOPAY</div>
+                                <div class="text-xs text-emerald-400 font-mono">085129745314</div>
+                                <div class="text-[10px] text-gray-400">(tf dulu kirim bukti lewat wa)</div>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-mobile-screen text-emerald-400 text-sm"></i>
+                    </label>
+                </div>
+
+                <button onclick="confirmAndSendWA()" class="w-full bg-emerald-500 py-2.5 rounded-xl font-outfit font-extrabold text-black text-sm mt-3 flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-base"></i> KONFIRMASI PESANAN
+                </button>
+            `;
+        }
+
+        // WHATSAPP REDIRECT GENERATION
+        function confirmAndSendWA() {
+            const selectedPay = document.querySelector('input[name="payment"]:checked');
+            if(!selectedPay) {
+                alert('Pilih metode pembayaran!');
+                return;
+            }
+            orderState.paymentMethod = selectedPay.value;
+
+            let waText = "";
+
+            if (orderState.category === 'joky') {
+                waText = `PESANAN - JOKY\nNOMINAL : ${orderState.nominal}\n\nSAVE BUYER SULTAN DHOXZ STR\n\n[ BERBAYAR ]\n\nSV : ${orderState.buyerName}\nwa.me/628${orderState.buyerPhone}\n\n———————————\n\nDi tunggu proses nyaa ya min\n\n#NAMBAH VIEW SW + KONTAK + DLL💃\n#DHOXZ JOKI ELITE`;
+            } else if (orderState.category === 'kebutuh-jb') {
+                waText = `NAMA PEMBELI : ${orderState.buyerName}\nITEM : ${orderState.item}\nNOMINAL : ${orderState.nominal}\nPAYMENT : ${orderState.paymentMethod}\n\nMOHON AGAR SEGERA DI PROSES MIN`;
+            } else if (orderState.category === 'sc-tele') {
+                waText = `NAMA PEMBELI : ${orderState.buyerName}\nSC : ${orderState.item}\nNOMINAL : ${orderState.nominal}\nMETODE PEMBAYARAN : ${orderState.paymentMethod}`;
+            }
+
+            const targetWA = "6285129746314";
+            const encodedText = encodeURIComponent(waText);
+            
+            closeModal();
+            window.open(`https://wa.me/${targetWA}?text=${encodedText}`, '_blank');
+        }
+
+        // INIT APPLICATION
+        window.onload = function() {
+            initRender();
+            switchTab('beranda');
+            startPreloader();
+        };
+    </script>
+</body>
+</html>
